@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import type { Subscriber } from "@/types";
+import { adminFetch } from "@/lib/admin-api";
 
 export default function AdminSubscribersPage() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
 
   useEffect(() => {
-    fetch("/api/newsletter")
+    adminFetch("/api/newsletter")
       .then((r) => r.json())
       .then((d: { subscribers?: Subscriber[] }) => setSubscribers(d.subscribers || []));
   }, []);

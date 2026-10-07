@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatINR } from "@/lib/utils";
+import { adminFetch } from "@/lib/admin-api";
 import type { Order } from "@/types";
 
 type Dash = {
@@ -24,7 +25,7 @@ export default function AdminDashboardPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/dashboard")
+    adminFetch("/api/admin/dashboard")
       .then(async (r) => {
         if (!r.ok) throw new Error("Could not load dashboard");
         setData(await r.json());

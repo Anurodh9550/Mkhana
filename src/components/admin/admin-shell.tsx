@@ -20,6 +20,7 @@ import {
 import { useState } from "react";
 import { Logo } from "@/components/layout/logo";
 import { cn } from "@/lib/utils";
+import { adminFetch, clearAdminSession } from "@/lib/admin-api";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -40,7 +41,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
   if (pathname === "/admin/login") return <>{children}</>;
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await adminFetch("/api/auth/logout", { method: "POST" });
+    clearAdminSession();
     router.push("/admin/login");
     router.refresh();
   }

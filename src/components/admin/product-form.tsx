@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/form";
 import { slugify } from "@/lib/utils";
+import { adminFetch } from "@/lib/admin-api";
 import type { Product, ProductCategory, ProductVariant } from "@/types";
 
 const categories: ProductCategory[] = ["raw", "roasted", "flavoured", "gifting"];
@@ -51,7 +52,7 @@ export function ProductForm({ product }: { product?: Product }) {
   async function upload(file: File) {
     const data = new FormData();
     data.append("file", file);
-    const res = await fetch("/api/admin/upload", { method: "POST", body: data });
+    const res = await adminFetch("/api/admin/upload", { method: "POST", body: data });
     const json = (await res.json()) as { url?: string; error?: string };
     if (!res.ok || !json.url) throw new Error(json.error || "Upload failed");
     setForm((prev) => ({ ...prev, images: [...prev.images.filter(Boolean), json.url!] }));
@@ -70,9 +71,8 @@ export function ProductForm({ product }: { product?: Product }) {
       tags: form.tags.filter(Boolean),
     };
     try {
-      const res = await fetch(product ? `/api/products/${product.id}` : "/api/products", {
+      const res = await adminFetch(product ? `/api/products/${product.id}` : "/api/products", {
         method: product ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const data = (await res.json()) as { error?: string };

@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import type { ContactMessage } from "@/types";
+import { adminFetch } from "@/lib/admin-api";
 
 export default function AdminMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
 
   function load() {
-    fetch("/api/contact")
+    adminFetch("/api/contact")
       .then((r) => r.json())
       .then((d: { messages?: ContactMessage[] }) => setMessages(d.messages || []));
   }
@@ -17,9 +18,8 @@ export default function AdminMessagesPage() {
   }, []);
 
   async function markRead(id: string) {
-    await fetch("/api/contact", {
+    await adminFetch("/api/contact", {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, read: true }),
     });
     load();

@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "backend": "backend\\.venv\\Scripts\\python.exe backend\\manage.py runserver 8000"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.20",

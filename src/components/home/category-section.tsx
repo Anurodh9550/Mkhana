@@ -1,10 +1,10 @@
 import { ProductCard } from "@/components/product/product-card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getDb } from "@/lib/db";
+import { getCatalog } from "@/lib/catalog";
 
 export async function Categories() {
-  const db = await getDb();
+  const { products } = await getCatalog();
   return (
     <section className="mx-auto max-w-7xl px-5 py-16 md:px-8">
       <p className="text-center text-[11px] font-semibold uppercase tracking-[0.28em] text-primary">The product in focus</p>
@@ -13,7 +13,7 @@ export async function Categories() {
         Raw, roasted, and house flavours — GI-tagged fox nuts from Mithila, Bihar.
       </p>
       <div className="mt-10 grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
-        {db.products.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

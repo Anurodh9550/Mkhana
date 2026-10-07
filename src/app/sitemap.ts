@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
-import { getDb } from "@/lib/db";
+import { getCatalog } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = "https://mithilamakhana.com";
-  const db = await getDb();
+  const { products } = await getCatalog();
   const staticPages = [
     "",
     "/shop",
@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${base}${path}`,
     lastModified: new Date(),
   }));
-  const productPages = db.products.map((p) => ({
+  const productPages = products.map((p) => ({
     url: `${base}/product/${p.slug}`,
     lastModified: new Date(),
   }));

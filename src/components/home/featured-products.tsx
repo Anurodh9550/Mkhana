@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/product/product-card";
 import { Button } from "@/components/ui/button";
-import { getDb } from "@/lib/db";
+import { getCatalog } from "@/lib/catalog";
 
 export async function FeaturedProducts() {
-  const db = await getDb();
-  const bestsellers = db.products.filter((p) => p.bestseller).slice(0, 4);
+  const { products } = await getCatalog();
+  const bestsellers = products.filter((p) => p.bestseller).slice(0, 4);
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-16 md:px-8">

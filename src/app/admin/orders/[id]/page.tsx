@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { formatINR, ORDER_STATUSES } from "@/lib/utils";
+import { adminFetch } from "@/lib/admin-api";
 import type { Order, OrderStatus, PaymentStatus } from "@/types";
 
 export default function AdminOrderDetailPage() {
@@ -14,7 +15,7 @@ export default function AdminOrderDetailPage() {
   const [saving, setSaving] = useState(false);
 
   function load() {
-    fetch(`/api/orders/${id}`)
+    adminFetch(`/api/orders/${id}`)
       .then(async (r) => {
         const data = (await r.json()) as { order?: Order; error?: string };
         if (!r.ok || !data.order) throw new Error(data.error || "Not found");
@@ -33,9 +34,8 @@ export default function AdminOrderDetailPage() {
     setSaving(true);
     setError("");
     try {
-      const res = await fetch(`/api/orders/${order.id}`, {
+      const res = await adminFetch(`/api/orders/${order.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       const data = (await res.json()) as { order?: Order; error?: string };

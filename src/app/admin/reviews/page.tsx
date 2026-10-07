@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/form";
 import type { Product, Review } from "@/types";
+import { adminFetch } from "@/lib/admin-api";
 
 export default function AdminReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -11,7 +12,7 @@ export default function AdminReviewsPage() {
   const [error, setError] = useState("");
 
   function load() {
-    Promise.all([fetch("/api/reviews").then((r) => r.json()), fetch("/api/products").then((r) => r.json())]).then(
+    Promise.all([adminFetch("/api/reviews").then((r) => r.json()), fetch("/api/products").then((r) => r.json())]).then(
       ([r, p]: [{ reviews?: Review[] }, { products?: Product[] }]) => {
         setReviews(r.reviews || []);
         setProducts(p.products || []);
@@ -27,9 +28,8 @@ export default function AdminReviewsPage() {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     setError("");
-    const res = await fetch("/api/reviews", {
+    const res = await adminFetch("/api/reviews", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         productId: form.get("productId"),
         name: form.get("name"),
@@ -50,7 +50,7 @@ export default function AdminReviewsPage() {
 
   async function remove(id: string) {
     if (!confirm("Delete this review?")) return;
-    await fetch(`/api/reviews?id=${id}`, { method: "DELETE" });
+    await adminFetch(`/api/reviews?id=${id}`, { method: "DELETE" });
     load();
   }
 

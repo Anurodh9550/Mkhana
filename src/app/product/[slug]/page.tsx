@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductDetail } from "@/components/product/product-detail";
-import { findProductBySlug, getDb, relatedProducts } from "@/lib/db";
+import { getCatalog, relatedProducts } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -11,8 +11,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const db = await getDb();
-  const product = findProductBySlug(db, slug);
+  const { products } = await getCatalog();
+  const product = products.find((p) => p.slug === slug);
   if (!product) return { title: "Product" };
   return {
     title: product.name,
@@ -23,11 +23,11 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const db = await getDb();
-  const product = findProductBySlug(db, slug);
+  const { products, reviews: allReviews } = await getCatalog();
+  const product = products.find((p) => p.slug === slug);
   if (!product) notFound();
-  const reviews = db.reviews.filter((r) => r.productId === product.id);
-  const related = relatedProducts(db.products, product.slug);
+  const reviews = allReviews.filter((r) => r.productId === product.id);
+  const related = relatedProducts(products, product.slug);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",

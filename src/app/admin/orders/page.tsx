@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatINR } from "@/lib/utils";
+import { adminFetch } from "@/lib/admin-api";
 import type { Order } from "@/types";
 
 export default function AdminOrdersPage() {
@@ -10,7 +11,7 @@ export default function AdminOrdersPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/orders")
+    adminFetch("/api/orders")
       .then(async (r) => {
         const data = (await r.json()) as { orders?: Order[]; error?: string };
         if (!r.ok) throw new Error(data.error || "Failed");

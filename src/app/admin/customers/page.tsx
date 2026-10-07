@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { formatINR } from "@/lib/utils";
+import { adminFetch } from "@/lib/admin-api";
 import type { Customer } from "@/types";
 
 export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
 
   useEffect(() => {
-    fetch("/api/admin/customers")
+    adminFetch("/api/admin/customers")
       .then((r) => r.json())
       .then((d: { customers?: Customer[] }) => setCustomers(d.customers || []));
   }, []);

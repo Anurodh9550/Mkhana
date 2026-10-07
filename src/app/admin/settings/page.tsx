@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/form";
 import type { StoreSettings } from "@/types";
+import { adminFetch } from "@/lib/admin-api";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<StoreSettings | null>(null);
@@ -11,7 +12,7 @@ export default function AdminSettingsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/settings")
+    adminFetch("/api/admin/settings")
       .then((r) => r.json())
       .then((d: { settings: StoreSettings }) => setSettings(d.settings));
   }, []);
@@ -25,9 +26,8 @@ export default function AdminSettingsPage() {
         e.preventDefault();
         setError("");
         setSaved("");
-        const res = await fetch("/api/admin/settings", {
+        const res = await adminFetch("/api/admin/settings", {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(settings),
         });
         if (!res.ok) {

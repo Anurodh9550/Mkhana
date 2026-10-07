@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/form";
+import { setAdminSession } from "@/lib/admin-api";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -29,8 +30,10 @@ export default function AdminLoginPage() {
                 password: form.get("password"),
               }),
             });
-            const data = (await res.json()) as { error?: string };
+            const data = (await res.json()) as { error?: string; token?: string };
             if (!res.ok) throw new Error(data.error || "Login failed");
+            if (!data.token) throw new Error("No token returned from Django");
+            setAdminSession(data.token);
             router.push("/admin");
             router.refresh();
           } catch (err) {

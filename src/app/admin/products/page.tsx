@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { formatINR } from "@/lib/utils";
+import { adminFetch } from "@/lib/admin-api";
 import type { Product } from "@/types";
 
 export default function AdminProductsPage() {
@@ -27,7 +28,7 @@ export default function AdminProductsPage() {
 
   async function remove(id: string) {
     if (!confirm("Delete this product?")) return;
-    const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+    const res = await adminFetch(`/api/products/${id}`, { method: "DELETE" });
     if (!res.ok) {
       const data = (await res.json()) as { error?: string };
       setError(data.error || "Delete failed");
